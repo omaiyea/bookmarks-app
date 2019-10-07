@@ -13,6 +13,10 @@ class EditBookmark extends Component {
 
   state = {
     error: null,
+    title: '',
+    url: '',
+    description: '',
+    rating: ''
   };
 
   handleSubmit = e => {
@@ -56,9 +60,41 @@ class EditBookmark extends Component {
       })
   }
 
+  componentDidMount(){
+    const bookmarkId = this.props.match.params.bookmarkId
+    const fullEndpoint = config.API_ENDPOINT + bookmarkId
+
+    fetch(fullEndpoint, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json',
+            'authorization': `Bearer ${config.API_KEY}`
+        }
+    })
+    .then(bookmarkRes => {
+        if(bookmarkRes.ok){
+         return bookmarkRes.json()
+        }
+    })
+    .then(bookmark => {
+        const title = bookmark.title
+        const url = bookmark.url
+        const description = bookmark.description
+        const rating = bookmark.rating
+        this.setState({title})
+        this.setState({url})
+        this.setState({description})
+        this.setState({rating})
+    })
+    .catch(error => {
+        this.setState( {error} )
+    })
+  }
+
   render() {
     const { error } = this.state
     const { onClickCancel } = this.props
+
     return (
       <section className='AddBookmark'>
         <h2>Edit a bookmark</h2>
@@ -79,7 +115,8 @@ class EditBookmark extends Component {
               type='text'
               name='title'
               id='title'
-              placeholder='Great website!'
+              value={this.state.title}
+              //need on change
               required
             />
           </div>
@@ -93,7 +130,8 @@ class EditBookmark extends Component {
               type='url'
               name='url'
               id='url'
-              placeholder='https://www.great-website.com/'
+              value={this.state.url}
+              //need on change
               required
             />
           </div>
@@ -104,6 +142,8 @@ class EditBookmark extends Component {
             <textarea
               name='description'
               id='description'
+              value={this.state.description}
+              //need on change
             />
           </div>
           <div>
@@ -116,7 +156,8 @@ class EditBookmark extends Component {
               type='number'
               name='rating'
               id='rating'
-              defaultValue='1'
+              value={this.state.rating}
+              //need on change
               min='1'
               max='5'
               required
