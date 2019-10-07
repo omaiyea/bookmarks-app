@@ -50,6 +50,12 @@ class App extends Component {
     })
   }
 
+  editBookmark = bookmark => {
+    this.setState({
+      bookmarks: [ ...this.state.bookmarks, bookmark ],
+    })
+  }
+
   componentDidMount() {
     fetch(config.API_ENDPOINT, {
       method: 'GET',
@@ -88,7 +94,7 @@ class App extends Component {
            path='/edit-bookmark/:bookmarkId'
            render={({history}) => {
             return <EditBookmark
-              onAddBookmark={this.addBookmark}
+              onEditBookmark={this.editBookmark}
               onClickCancel={() => history.push('/')}
            />
            }}

@@ -1,6 +1,6 @@
 import React, { Component } from  'react';
 import config from '../config'
-import '../AddBookmark/AddBookmark.css';
+import '../AddBookmark/AddBookmark.css'; //use same style as add page
 
 const Required = () => (
   <span className='AddBookmark__required'>*</span>
@@ -8,7 +8,7 @@ const Required = () => (
 
 class EditBookmark extends Component {
   static defaultProps = {
-    onAddBookmark: () => {}
+    onEditBookmark: () => {}
   };
 
   state = {
@@ -49,7 +49,7 @@ class EditBookmark extends Component {
         url.value = ''
         description.value = ''
         rating.value = ''
-        this.props.onAddBookmark(data)
+        this.props.onEditBookmark(data)
       })
       .catch(error => {
         this.setState({ error })
