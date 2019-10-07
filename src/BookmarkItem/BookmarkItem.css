@@ -30,3 +30,13 @@
   font-size: .8em;
   text-align: right;
 }
+
+/** to make edit button look like delete, even though it's a link **/
+.button__link{
+  text-decoration: none;
+  color: black;
+}
+
+button{
+  cursor: pointer;
+}

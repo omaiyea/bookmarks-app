@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
+import EditBookmark from './EditBookmark/EditBookmark';
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
@@ -78,6 +79,15 @@ class App extends Component {
            path='/add-bookmark'
            render={({history}) => {
             return <AddBookmark
+              onAddBookmark={this.addBookmark}
+              onClickCancel={() => history.push('/')}
+           />
+           }}
+          />
+          <Route
+           path='/edit-bookmark/:bookmarkId'
+           render={({history}) => {
+            return <EditBookmark
               onAddBookmark={this.addBookmark}
               onClickCancel={() => history.push('/')}
            />
