@@ -3,15 +3,14 @@ import { Route } from 'react-router-dom';
 import AddBookmark from './AddBookmark/AddBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
 import EditBookmark from './EditBookmark/EditBookmark';
+import BookmarkContext from './BookmarkContext';
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
 
-const bookmarks = [];
-
 class App extends Component {
   state = {
-    bookmarks,
+    bookmarks: [],
     error: null,
   };
 
@@ -28,9 +27,11 @@ class App extends Component {
     })
   }
 
-  editBookmark = bookmark => {
+  updateBookmark = bookmark => {
     this.setState({
-      bookmarks: [ ...this.state.bookmarks, bookmark ],
+      bookmarks: this.state.bookmarks.map(bm =>
+        (bm.id !== bookmark.id) ? bm : bookmark
+      )
     })
   }
 
@@ -53,17 +54,23 @@ class App extends Component {
   }
 
   render() {
-    const { bookmarks } = this.state
+    const contextValue = {
+      bookmarks: this.state.bookmarks,
+      addBookmark: this.addBookmark,
+      updateBookmark: this.updateBookmark
+    }
+
     return (
       <main className='App'>
         <h1>Bookmarks!</h1>
+        <BookmarkContext.Provider value={contextValue}>
         <Nav />
         <div className='content' aria-live='polite'>
           <Route
            path='/add-bookmark'
            render={({history}) => {
             return <AddBookmark
-              onAddBookmark={this.addBookmark}
+//              onAddBookmark={this.addBookmark}
               onClickCancel={() => history.push('/')}
            />
            }}
@@ -73,7 +80,7 @@ class App extends Component {
            render={(props) => {
             return <EditBookmark
               {...props}
-              onEditBookmark={this.editBookmark}
+             // onEditBookmark={this.editBookmark}
               onClickCancel={() => props.history.push('/')}
            />
            }}
@@ -81,12 +88,10 @@ class App extends Component {
           <Route
            exact
            path='/'
-           render={() => 
-            <BookmarkList
-              bookmarks={bookmarks}
-            />}
+           component={BookmarkList}
           />
         </div>
+        </BookmarkContext.Provider>
       </main>
     );
   }

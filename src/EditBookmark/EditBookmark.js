@@ -1,5 +1,6 @@
 import React, { Component } from  'react';
 import { withRouter } from 'react-router-dom';
+import BookmarkContext from '../BookmarkContext';
 import config from '../config'
 import '../AddBookmark/AddBookmark.css'; //use same style as add page
 
@@ -11,6 +12,8 @@ class EditBookmark extends Component {
   static defaultProps = {
     //onEditBookmark: () => {}
   };
+
+  static contextType = BookmarkContext;
 
   state = {
     error: null,
@@ -29,8 +32,6 @@ class EditBookmark extends Component {
       description: this.state.description,
       rating: this.state.rating,
     }
-
-    console.log(bookmark)
 
     this.setState({ error: null })
     const bookmarkId = this.props.match.params.bookmarkId
@@ -53,7 +54,8 @@ class EditBookmark extends Component {
           })
         }
       })
-      .then(() => { //if succesful patch, then show list of bookmarks
+      .then(() => { //if succesful patch, then show list of bookmarks and update context
+        this.context.updateBookmark(bookmark)
         this.props.history.push('/')
       })
       .catch(error => { //if not succesful, throw error
