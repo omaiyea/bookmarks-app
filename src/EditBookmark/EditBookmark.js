@@ -1,4 +1,5 @@
 import React, { Component } from  'react';
+import { withRouter } from 'react-router-dom';
 import config from '../config'
 import '../AddBookmark/AddBookmark.css'; //use same style as add page
 
@@ -8,7 +9,7 @@ const Required = () => (
 
 class EditBookmark extends Component {
   static defaultProps = {
-    onEditBookmark: () => {}
+    //onEditBookmark: () => {}
   };
 
   state = {
@@ -22,16 +23,21 @@ class EditBookmark extends Component {
   handleSubmit = e => {
     e.preventDefault()
     // get the form fields from the event
-    const { title, url, description, rating } = e.target
     const bookmark = {
-      title: title.value,
-      url: url.value,
-      description: description.value,
-      rating: rating.value,
+      title: this.state.title,
+      url: this.state.url,
+      description: this.state.description,
+      rating: this.state.rating,
     }
+
+    console.log(bookmark)
+
     this.setState({ error: null })
-    fetch(config.API_ENDPOINT, {
-      method: 'POST',
+    const bookmarkId = this.props.match.params.bookmarkId
+    const fullEndpoint = config.API_ENDPOINT + bookmarkId
+
+    fetch(fullEndpoint, {
+      method: 'PATCH',
       body: JSON.stringify(bookmark),
       headers: {
         'content-type': 'application/json',
@@ -46,18 +52,37 @@ class EditBookmark extends Component {
             throw error
           })
         }
-        return res.json()
       })
-      .then(data => {
-        title.value = ''
-        url.value = ''
-        description.value = ''
-        rating.value = ''
-        this.props.onEditBookmark(data)
+      .then(() => { //if succesful patch, then show list of bookmarks
+        this.props.history.push('/')
       })
-      .catch(error => {
+      .catch(error => { //if not succesful, throw error
         this.setState({ error })
       })
+  }
+
+  handleChangeTitle(e){
+    this.setState({
+      title: e.target.value
+    })
+  }
+
+  handleChangeUrl(e){
+    this.setState({
+      url: e.target.value
+    })
+  }
+
+  handleChangeRating(e){
+    this.setState({
+      rating: e.target.value
+    })
+  }
+
+  handleChangeDesc(e){
+    this.setState({
+      description: e.target.value
+    })
   }
 
   componentDidMount(){
@@ -116,7 +141,7 @@ class EditBookmark extends Component {
               name='title'
               id='title'
               value={this.state.title}
-              //need on change
+              onChange={e => this.handleChangeTitle(e)}
               required
             />
           </div>
@@ -131,7 +156,7 @@ class EditBookmark extends Component {
               name='url'
               id='url'
               value={this.state.url}
-              //need on change
+              onChange={e => this.handleChangeUrl(e)}
               required
             />
           </div>
@@ -143,7 +168,7 @@ class EditBookmark extends Component {
               name='description'
               id='description'
               value={this.state.description}
-              //need on change
+              onChange={e => this.handleChangeDesc(e)}
             />
           </div>
           <div>
@@ -157,7 +182,7 @@ class EditBookmark extends Component {
               name='rating'
               id='rating'
               value={this.state.rating}
-              //need on change
+              onChange={e => this.handleChangeRating(e)}
               min='1'
               max='5'
               required
@@ -178,4 +203,4 @@ class EditBookmark extends Component {
   }
 }
 
-export default EditBookmark;
+export default withRouter(EditBookmark);
