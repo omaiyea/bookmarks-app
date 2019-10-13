@@ -42,7 +42,6 @@ class EditBookmark extends Component {
       body: JSON.stringify(bookmark),
       headers: {
         'content-type': 'application/json',
-        'authorization': `bearer ${config.API_KEY}`
       }
     })
       .then(res => {
